@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Neraca Surga</title>
+
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            label {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body class="antialiased py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="form-group col-12 text-center">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <img src="adigod.png" height="100px">
+                        <h1 class="mx-4">NERACA SURGA</h1>
+                        <img src="adigod.png" height="100px" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
+                    </div>
+                </div>
+                <div class="form-group col-12">
+                    <hr>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Belanja</label>
+                    <input type="text" name="belanja" class="form-control">
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Fee</label>
+                    <input type="text" name="fee" class="form-control">
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Diskon</label>
+                    <input type="text" name="diskon" class="form-control">
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="text-white">x</label>
+                    <br>
+                    <button class="btn btn-primary" id="hitung">Hitung</button>
+                </div>
+                <div class="form-group col-12">
+                    <table class="table table-dark table-bordered">
+                        <thead>
+                            <th class="text-center align-middle">Nama</th>
+                            <th class="text-center align-middle">Price</th>
+                            <th class="text-center align-middle">Bayar</th>
+                            <th class="align-middle" style="width: 25px"><button class="btn btn-success" id="add" style="font-weight: bold">+</button></th>
+                        </thead>
+                        <tbody id="table">
+                            <tr class="base">
+                                <td class="text-center align-middle"><input type="text" name="nama[]" class="form-control"></td>
+                                <td class="text-center align-middle"><input type="number" name="price[]" min="0" class="form-control"></td>
+                                <td class="text-center align-middle"><input type="text" name="bayar[]" class="form-control" readonly></td>
+                                <td class="text-center align-middle"><button class="btn btn-danger" style="font-weight: bold">x</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#add').click(function(e){
+            e.preventDefault();
+            $('#table').append(`
+                <tr>
+                    <td class="text-center align-middle"><input type="text"  name="nama[]" class="form-control"></td>
+                    <td class="text-center align-middle"><input type="number" name="price[]" min="0" class="form-control"></td>
+                    <td class="text-center align-middle"><input type="text" name="bayar[]" class="form-control" readonly></td>
+                    <td class="text-center align-middle"><button class="btn btn-danger" style="font-weight: bold">x</button></td>
+                </tr>
+            `);
+        });
+        $(document).on('click', '.btn-danger', function(e){
+            e.preventDefault();
+            if ($(this).closest('tr').hasClass('base')) {
+                $(this).closest('tr').find('input').val('');
+            } else {
+                $(this).closest('tr').remove();
+            }
+        });
+        $('#hitung').click(function(e){
+            e.preventDefault();
+            let belanja = parseFloat($("[name='belanja']").val());
+            let fee = parseFloat($("[name='fee']").val());
+            let diskon = parseFloat($("[name='diskon']").val());
+            let count =  $('table tbody tr').length;
+            $('table tbody tr').each(function(i,v){
+                let price = parseFloat($(v).find('[name="price[]"]').val());
+                price = price + (fee / count);
+                let diskon_persen = price / (belanja + fee);
+                let diskon_value = diskon_persen * diskon;
+                let result = price - diskon_value;
+                $(v).find('[name="bayar[]"]').val((result));
+            });
+        });
+    </script>
+    </body>
+</html>
